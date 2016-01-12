@@ -46,17 +46,19 @@
                     return $this->hasLinkedIn();
                 }, ['note','article','image']);
 
-                if ($this->hasLinkedIn()) {
-                    if (is_array(\Idno\Core\site()->session()->currentUser()->linkedin)) {
-                        foreach (\Idno\Core\site()->session()->currentUser()->linkedin as $id => $details) {
-                            if ($id != 'access_token') {
-                                \Idno\Core\site()->syndication()->registerServiceAccount('linkedin', $id, $details['name']);
-                            } else {
-                                \Idno\Core\site()->syndication()->registerServiceAccount('linkedin', $id, 'LinkedIn');
+                \Idno\Core\site()->addEventHook('user/auth/success', function (\Idno\Core\Event $event) {
+                    if ($this->hasLinkedIn()) {
+                        if (is_array(\Idno\Core\site()->session()->currentUser()->linkedin)) {
+                            foreach (\Idno\Core\site()->session()->currentUser()->linkedin as $id => $details) {
+                                if ($id != 'access_token') {
+                                    \Idno\Core\site()->syndication()->registerServiceAccount('linkedin', $id, $details['name']);
+                                } else {
+                                    \Idno\Core\site()->syndication()->registerServiceAccount('linkedin', $id, 'LinkedIn');
+                                }
                             }
                         }
                     }
-                }
+                });
 
                 // Push "notes" to LinkedIn
                 \Idno\Core\site()->addEventHook('post/note/linkedin', function (\Idno\Core\Event $event) {
