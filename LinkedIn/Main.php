@@ -73,6 +73,9 @@
                             }
                             $message = strip_tags($object->getDescription());
                             //$message .= "\n\n" . $object->getURL();
+                            
+                            $message = html_entity_decode($message);
+                            
                             if (!empty($message) && substr($message, 0, 1) != '@') {
 
                                 try {
@@ -102,6 +105,7 @@
                                     } else {
                                         if (preg_match('/<message>(.*?)<\/message>/', $result['content'], $matches)) {
                                             $message = $matches[1];
+                                            $message = html_entity_decode($message);
                                         }
 
                                         \Idno\Core\site()->logging->log("LinkedIn Syndication: " . print_r($result, true), LOGLEVEL_ERROR);
@@ -185,6 +189,7 @@
 
                                     $message = strip_tags($object->getDescription());
                                     $message .= "\n\nOriginal: " . $object->getURL();
+                                    $message = html_entity_decode($message);
 
                                     $result = \Idno\Core\Webservice::post(self::$SHARE_URL . '?oauth2_access_token=' . $linkedinAPI->access_token,
                                         '
